@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ShortcutsDemo</string>
+    <string name="compose_shortcut_long_label1">label1</string>
+    <string name="compose_shortcut_short_label1">label2</string>
+    <string name="compose_disabled_message1">message1</string>
 </resources>
