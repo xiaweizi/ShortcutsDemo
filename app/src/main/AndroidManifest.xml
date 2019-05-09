@@ -21,6 +21,12 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity android:name=".TestActivity"></activity>
+        <!-- locale变化时更新数据库 -->
+        <receiver android:name="com.example.xiaweizi.shortcutsdemo.TranslateReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
