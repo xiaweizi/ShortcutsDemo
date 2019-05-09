@@ -9,4 +9,11 @@
     <string name="static_disabled_message2">message2</string>
 
     <string name="dynamic_shortcut_short_label">english</string>
+
+    <string name="add_new_website">Add New Website</string>
+    <string name="add_new_website_short">Add Website</string>
+    <string name="existing_shortcuts">Existing shortcuts:</string>
+    <string name="remove_shortcut">Remove</string>
+    <string name="disable_shortcut">Disable</string>
+    <string name="enable_shortcut">Enable</string>
 </resources>

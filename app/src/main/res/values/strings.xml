@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ShortcutsDemo</string>
+    <string name="app_name">快捷键</string>
     <string name="static_shortcut_long_label1">静态</string>
     <string name="static_shortcut_short_label1">staticShortLabel1</string>
     <string name="static_disabled_message1">message1</string>
@@ -9,4 +9,11 @@
     <string name="static_disabled_message2">message2</string>
 
     <string name="dynamic_shortcut_short_label">中文</string>
+
+    <string name="add_new_website">添加新的站点</string>
+    <string name="add_new_website_short">添加站点</string>
+    <string name="existing_shortcuts">存在的 shortcuts:</string>
+    <string name="remove_shortcut">移除</string>
+    <string name="disable_shortcut">无效</string>
+    <string name="enable_shortcut">有效</string>
 </resources>

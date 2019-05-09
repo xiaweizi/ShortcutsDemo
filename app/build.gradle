@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.xiaweizi.shortcutsdemo"
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
