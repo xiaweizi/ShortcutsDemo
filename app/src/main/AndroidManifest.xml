@@ -20,7 +20,7 @@
 
             <meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts_google" />
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity android:name=".TestActivity"></activity>
         <!-- locale变化时更新数据库 -->

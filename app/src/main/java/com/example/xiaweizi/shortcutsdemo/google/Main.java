@@ -3,9 +3,11 @@ package com.example.xiaweizi.shortcutsdemo.google;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.xiaweizi.shortcutsdemo.MainActivity;
 import com.example.xiaweizi.shortcutsdemo.R;
 
 import java.util.ArrayList;

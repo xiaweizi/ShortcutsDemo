@@ -179,6 +179,7 @@ public class ShortcutHelper {
     }
 
     private ShortcutInfo.Builder setSiteInformation(ShortcutInfo.Builder b, Uri uri) {
+        if (uri == null) return b;
         b.setShortLabel(uri.getHost());
         b.setLongLabel(uri.toString());
 
