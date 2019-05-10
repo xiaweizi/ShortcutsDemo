@@ -44,12 +44,8 @@ public class MainActivity extends AppCompatActivity {
         tvUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               tvUpdate.postDelayed(new Runnable() {
-                   @Override
-                   public void run() {
-                       updateShortcutInfo();
-                   }
-               }, 2000);
+                updateShortcutInfo();
+
             }
         });
     }
@@ -69,11 +65,6 @@ public class MainActivity extends AppCompatActivity {
                         .setRank(4)
                         .build();
                 dynamicShortcuts.add(shortcutInfo);
-                for (int i = 0; i < 1000; i++) {
-                    shortcutManager.updateShortcuts(dynamicShortcuts);
-                    boolean rateLimitingActive = shortcutManager.isRateLimitingActive();
-                    Log.i(TAG, "rateLimitingActive: " + rateLimitingActive);
-                }
             }
             Log.i(TAG, " total time: " + (System.currentTimeMillis() - lastTime));
             int size = shortcutManager.getPinnedShortcuts().size();
