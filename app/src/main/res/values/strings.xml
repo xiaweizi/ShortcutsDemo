@@ -16,4 +16,5 @@
     <string name="remove_shortcut">移除</string>
     <string name="disable_shortcut">无效</string>
     <string name="enable_shortcut">有效</string>
+    <string name="disable_message">你不能点击他</string>
 </resources>

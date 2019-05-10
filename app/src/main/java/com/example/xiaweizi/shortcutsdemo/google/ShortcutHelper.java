@@ -9,7 +9,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.PersistableBundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.example.xiaweizi.shortcutsdemo.R;
@@ -47,11 +49,13 @@ public class ShortcutHelper {
 
     private final ShortcutManager mShortcutManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public ShortcutHelper(Context context) {
         mContext = context;
         mShortcutManager = mContext.getSystemService(ShortcutManager.class);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void maybeRestoreAllDynamicShortcuts() {
         if (mShortcutManager.getDynamicShortcuts().size() == 0) {
             // NOTE: If this application is always supposed to have dynamic shortcuts, then publish
@@ -61,6 +65,7 @@ public class ShortcutHelper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void reportShortcutUsed(String id) {
         mShortcutManager.reportShortcutUsed(id);
     }
@@ -68,6 +73,7 @@ public class ShortcutHelper {
     /**
      * Use this when interacting with ShortcutManager to show consistent error messages.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private void callShortcutManager(BooleanSupplier r) {
         try {
             if (!r.getAsBoolean()) {
@@ -83,6 +89,7 @@ public class ShortcutHelper {
      * Called when the activity starts.  Looks for shortcuts that have been pushed and refreshes
      * them (but the refresh part isn't implemented yet...).
      */
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void refreshShortcuts(final boolean force) {
         new AsyncTask<Void, Void, Void>() {
             @Override
@@ -137,6 +144,7 @@ public class ShortcutHelper {
     /**
      * Return all mutable shortcuts from this app self.
      */
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public List<ShortcutInfo> getShortcuts() {
         // Load mutable dynamic shortcuts and pinned shortcuts and put them into a single list
         // removing duplicates.
@@ -164,6 +172,7 @@ public class ShortcutHelper {
         return ret;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private ShortcutInfo createShortcutForUrl(String urlAsString) {
         Log.i(TAG, "createShortcutForUrl: " + urlAsString);
 
@@ -178,6 +187,7 @@ public class ShortcutHelper {
         return b.build();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private ShortcutInfo.Builder setSiteInformation(ShortcutInfo.Builder b, Uri uri) {
         if (uri == null) return b;
         b.setShortLabel(uri.getHost());
@@ -193,6 +203,7 @@ public class ShortcutHelper {
         return b;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     private ShortcutInfo.Builder setExtras(ShortcutInfo.Builder b) {
         final PersistableBundle extras = new PersistableBundle();
         extras.putLong(EXTRA_LAST_REFRESH, System.currentTimeMillis());
@@ -208,6 +219,7 @@ public class ShortcutHelper {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void addWebSiteShortcut(String urlAsString) {
         final String uriFinal = urlAsString;
         callShortcutManager(new BooleanSupplier() {
@@ -219,14 +231,17 @@ public class ShortcutHelper {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void removeShortcut(ShortcutInfo shortcut) {
         mShortcutManager.removeDynamicShortcuts(Arrays.asList(shortcut.getId()));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void disableShortcut(ShortcutInfo shortcut) {
         mShortcutManager.disableShortcuts(Arrays.asList(shortcut.getId()));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     public void enableShortcut(ShortcutInfo shortcut) {
         mShortcutManager.enableShortcuts(Arrays.asList(shortcut.getId()));
     }
@@ -245,5 +260,9 @@ public class ShortcutHelper {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public static boolean isDeviceSupportShortcuts() {
+        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N_MR1;
     }
 }

@@ -19,6 +19,8 @@
         android:icon="@drawable/add"
         android:shortcutShortLabel="@string/add_new_website_short"
         android:shortcutLongLabel="@string/add_new_website"
+        android:enabled="true"
+        android:shortcutDisabledMessage="@string/disable_message"
         >
         <intent
             android:action="com.example.xiaweizi.shortcutsdemo.ADD_WEBSITE"

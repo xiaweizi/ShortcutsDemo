@@ -3,11 +3,9 @@ package com.example.xiaweizi.shortcutsdemo.google;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.xiaweizi.shortcutsdemo.MainActivity;
 import com.example.xiaweizi.shortcutsdemo.R;
 
 import java.util.ArrayList;
@@ -53,6 +50,8 @@ public class Main extends ListActivity implements View.OnClickListener {
 
         setContentView(R.layout.main);
 
+        if (!ShortcutHelper.isDeviceSupportShortcuts()) return;
+
         mHelper = new ShortcutHelper(this);
 
         mHelper.maybeRestoreAllDynamicShortcuts();
@@ -85,7 +84,7 @@ public class Main extends ListActivity implements View.OnClickListener {
         Log.i(TAG, "addWebSite");
 
         // This is important.  This allows the launcher to build a prediction model.
-        mHelper.reportShortcutUsed(ID_ADD_WEBSITE);
+//        mHelper.reportShortcutUsed(ID_ADD_WEBSITE);
 
         final EditText editUri = new EditText(this);
 
@@ -112,7 +111,9 @@ public class Main extends ListActivity implements View.OnClickListener {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                mHelper.addWebSiteShortcut(uri);
+                if (ShortcutHelper.isDeviceSupportShortcuts()) {
+                    mHelper.addWebSiteShortcut(uri);
+                }
                 return null;
             }
 
@@ -124,12 +125,16 @@ public class Main extends ListActivity implements View.OnClickListener {
     }
 
     private void refreshList() {
-        mAdapter.setShortcuts(mHelper.getShortcuts());
+        if (ShortcutHelper.isDeviceSupportShortcuts()) {
+            mAdapter.setShortcuts(mHelper.getShortcuts());
+        }
     }
 
     @Override
     public void onClick(View v) {
         final ShortcutInfo shortcut = (ShortcutInfo) ((View) v.getParent()).getTag();
+
+        if (!ShortcutHelper.isDeviceSupportShortcuts()) return;
 
         switch (v.getId()) {
             case R.id.disable:
@@ -150,6 +155,7 @@ public class Main extends ListActivity implements View.OnClickListener {
     private static final List<ShortcutInfo> EMPTY_LIST = new ArrayList<>();
 
     private String getType(ShortcutInfo shortcut) {
+        if (!ShortcutHelper.isDeviceSupportShortcuts()) return "";
         final StringBuilder sb = new StringBuilder();
         String sep = "";
         if (shortcut.isDynamic()) {
@@ -234,6 +240,7 @@ public class Main extends ListActivity implements View.OnClickListener {
 
             final TextView line1 = (TextView) view.findViewById(R.id.line1);
             final TextView line2 = (TextView) view.findViewById(R.id.line2);
+            if (!ShortcutHelper.isDeviceSupportShortcuts()) return;
 
             line1.setText(shortcut.getLongLabel());
 
