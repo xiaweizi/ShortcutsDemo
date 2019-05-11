@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         tvUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateShortcutInfo();
+                createPinnedShortcuts();
 
             }
         });
@@ -90,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
                     .setShortLabel(colouredLabel)
                     .setLongLabel("dynamicLongLabel1")
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_ces))
-                    .setIntent(intent1)
+                    .setIntent(intent)
                     .build();
 
             ShortcutInfo shortcut1 = new ShortcutInfo.Builder(this, "dynamicId2")
-                    .setShortLabel("d-ShortLabel2")
-                    .setLongLabel("dynamicShortLabel2")
+                    .setShortLabel("1")
+                    .setLongLabel("12")
                     .setIcon(Icon.createWithResource(this, R.mipmap.ic_launcher))
                     .setIntent(intent)
                     .setDisabledMessage("dynamicMessage2")

@@ -56,7 +56,7 @@ public class Main extends ListActivity implements View.OnClickListener {
 
         mHelper.maybeRestoreAllDynamicShortcuts();
 
-        mHelper.refreshShortcuts(/*force=*/ true);
+        mHelper.refreshShortcuts();
 
         if (ACTION_ADD_WEBSITE.equals(getIntent().getAction())) {
             // Invoked via the manifest shortcut.

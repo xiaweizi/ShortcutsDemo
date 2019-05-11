@@ -24,7 +24,9 @@ public class MyReceiver extends BroadcastReceiver {
         if (Intent.ACTION_LOCALE_CHANGED.equals(intent.getAction())) {
             // Refresh all shortcut to update the labels.
             // (Right now shortcut labels don't contain localized strings though.)
-            new ShortcutHelper(context).refreshShortcuts(/*force=*/ true);
+            if (ShortcutHelper.isDeviceSupportShortcuts()) {
+                new ShortcutHelper(context).refreshShortcuts();
+            }
         }
     }
 }

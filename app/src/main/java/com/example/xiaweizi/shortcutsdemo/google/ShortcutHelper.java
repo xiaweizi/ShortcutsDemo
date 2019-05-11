@@ -10,7 +10,6 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
@@ -90,39 +89,25 @@ public class ShortcutHelper {
      * them (but the refresh part isn't implemented yet...).
      */
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    public void refreshShortcuts(final boolean force) {
-        new AsyncTask<Void, Void, Void>() {
+    public void refreshShortcuts() {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
-            protected Void doInBackground(Void... params) {
+            public void run() {
                 Log.i(TAG, "refreshingShortcuts...");
 
-                final long now = System.currentTimeMillis();
-                final long staleThreshold = force ? now : now - REFRESH_INTERVAL_MS;
 
                 // Check all existing dynamic and pinned shortcut, and if their last refresh
                 // time is older than a certain threshold, update them.
 
                 final List<ShortcutInfo> updateList = new ArrayList<>();
-
                 for (ShortcutInfo shortcut : getShortcuts()) {
                     Log.i(TAG, shortcut.getId() + " is immutable: " + shortcut.isImmutable());
                     if (shortcut.isImmutable()) {
                         continue;
                     }
-
-                    final PersistableBundle extras = shortcut.getExtras();
-                    if (extras != null && extras.getLong(EXTRA_LAST_REFRESH) >= staleThreshold) {
-                        // Shortcut still fresh.
-                        continue;
-                    }
                     Log.i(TAG, "Refreshing shortcut: " + shortcut.getId());
-
-                    final ShortcutInfo.Builder b = new ShortcutInfo.Builder(
-                            mContext, shortcut.getId());
-
+                    final ShortcutInfo.Builder b = new ShortcutInfo.Builder(mContext, shortcut.getId());
                     setSiteInformation(b, shortcut.getIntent().getData());
-                    setExtras(b);
-
                     updateList.add(b.build());
                 }
                 // Call update.
@@ -135,10 +120,8 @@ public class ShortcutHelper {
                         }
                     });
                 }
-
-                return null;
             }
-        }.execute();
+        });
     }
 
     /**
@@ -182,7 +165,6 @@ public class ShortcutHelper {
         b.setIntent(new Intent(Intent.ACTION_VIEW, uri));
 
         setSiteInformation(b, uri);
-        setExtras(b);
 
         return b.build();
     }
@@ -203,13 +185,6 @@ public class ShortcutHelper {
         return b;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    private ShortcutInfo.Builder setExtras(ShortcutInfo.Builder b) {
-        final PersistableBundle extras = new PersistableBundle();
-        extras.putLong(EXTRA_LAST_REFRESH, System.currentTimeMillis());
-        b.setExtras(extras);
-        return b;
-    }
 
     private String normalizeUrl(String urlAsString) {
         if (urlAsString.startsWith("http://") || urlAsString.startsWith("https://")) {
