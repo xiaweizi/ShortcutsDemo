@@ -1,10 +1,13 @@
 package com.example.xiaweizi.shortcutsdemo;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.TextView;
+
+import java.util.List;
 
 public class TestActivity extends AppCompatActivity {
 
@@ -17,24 +20,17 @@ public class TestActivity extends AppCompatActivity {
 
     private void initData() {
         if (getIntent() != null) {
+            TextView tvTest = findViewById(R.id.tv_test);
             String value = getIntent().getStringExtra("key");
             if (!TextUtils.isEmpty(value)) {
-                TextView tvTest = findViewById(R.id.tv_test);
                 tvTest.setText(value);
             }
 
-            if (getIntent().getData() != null) {
-                String zpParams = getIntent().getData().getEncodedQuery();
-                Log.e("xiaweizi", "=zpParams= " + zpParams);
-                // 拆分获得单个参数
-                if (!TextUtils.isEmpty(zpParams)) {
-                    String[] params = zpParams.split("&");
-                    for (String param : params) {
-                        String[] key_Value = param.split("=");
-                        if (key_Value != null && key_Value.length == 2) {
-                            Log.e("xiaweizi", "=key= " + key_Value[0] + " =value= " + key_Value[1]);
-                        }
-                    }
+            if (getIntent().getData() != null && TextUtils.equals(getIntent().getAction(), Intent.ACTION_VIEW)) {
+                Uri uri = getIntent().getData();
+                List<String> pathSegments = uri.getPathSegments();
+                if (pathSegments != null && pathSegments.size() > 0) {
+                    tvTest.setText(pathSegments.get(0));
                 }
             }
         }

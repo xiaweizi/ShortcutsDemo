@@ -8,7 +8,11 @@
     <string name="static_shortcut_short_label2">staticShortLabel2</string>
     <string name="static_disabled_message2">message2</string>
 
-    <string name="dynamic_shortcut_short_label">english</string>
+    <string name="dynamic_shortcut_short_label1">dynamic1</string>
+    <string name="dynamic_shortcut_long_label1">dynamic shortcut 1</string>
+
+    <string name="dynamic_shortcut_short_label2">dynamic2</string>
+    <string name="dynamic_shortcut_long_label2">dynamic shortcut 2</string>
 
     <string name="add_new_website">Add New Website</string>
     <string name="add_new_website_short">Add Website</string>

@@ -1,5 +1,6 @@
 package com.example.xiaweizi.shortcutsdemo;
 
+import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
@@ -7,6 +8,8 @@ import android.content.pm.ShortcutManager;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
@@ -16,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.xiaweizi.shortcutsdemo.google.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +28,23 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "shortCut::";
 
+    private static final String ID_DYNAMIC_1 = "id_dynamic_1";
+    private static final String ID_DYNAMIC_2 = "id_dynamic_2";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        createPinnedShortcuts();
         TextView tvContent = findViewById(R.id.tv_content);
         tvContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Thread(new Runnable() {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                     @Override
                     public void run() {
-                        customAttrValues();
+                        setDynamicShortcuts();
                     }
-                }).start();
+                });
             }
         });
         final TextView tvUpdate = findViewById(R.id.update);
@@ -45,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 createPinnedShortcuts();
-
             }
         });
     }
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, "dynamicId1")
                         .setShortLabel("d-ShortLabel4")
                         .setLongLabel("dynamicLongLabel4")
-                        .setIcon(Icon.createWithResource(this, R.drawable.ic_recent_light))
+                        .setIcon(Icon.createWithResource(this, R.drawable.add))
                         .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("https://developer.android.com/guide/topics/ui/shortcuts/managing-shortcuts")))
                         .setRank(4)
                         .build();
@@ -72,57 +78,44 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void customAttrValues() {
+    private void setDynamicShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N_MR1) {
-            long lastTime = System.currentTimeMillis();
-            Intent intent = new Intent(this, TestActivity.class);
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.putExtra("key", "this is from dynamic label2");
-
             ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
-            int maxShortcutCountPerActivity = shortcutManager.getMaxShortcutCountPerActivity();
-            Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse("http://xiaweizi.cn/"));
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLUE);
-            String label = getResources().getString(R.string.dynamic_shortcut_short_label);
-            SpannableStringBuilder colouredLabel = new SpannableStringBuilder(label);
-            colouredLabel.setSpan(colorSpan, 0, label.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            ShortcutInfo shortcut = new ShortcutInfo.Builder(this, "dynamicId1")
-                    .setShortLabel(colouredLabel)
-                    .setLongLabel("dynamicLongLabel1")
-                    .setIcon(Icon.createWithResource(this, R.drawable.ic_ces))
-                    .setIntent(intent)
-                    .build();
-
-            ShortcutInfo shortcut1 = new ShortcutInfo.Builder(this, "dynamicId2")
-                    .setShortLabel("1")
-                    .setLongLabel("12")
-                    .setIcon(Icon.createWithResource(this, R.mipmap.ic_launcher))
-                    .setIntent(intent)
-                    .setDisabledMessage("dynamicMessage2")
-                    .build();
-
-
-
-            List<ShortcutInfo> shortcutInfos = new ArrayList<>();
-            shortcutInfos.add(shortcut);
-            shortcutInfos.add(shortcut1);
-
+            List<ShortcutInfo> shortcutInfo = new ArrayList<>();
+            shortcutInfo.add(createShortcutInfo1());
+            shortcutInfo.add(createShortcutInfo2());
             if (shortcutManager != null) {
-                shortcutManager.setDynamicShortcuts(shortcutInfos);
-                shortcutManager.reportShortcutUsed("dynamicId1");
+                shortcutManager.setDynamicShortcuts(shortcutInfo);
             }
-
-            List<ShortcutInfo> manifestShortcuts = shortcutManager.getManifestShortcuts();
-            for (int i = 0; i < manifestShortcuts.size(); i++) {
-                Log.i(TAG, "manifest-" + i + " id: " + manifestShortcuts.get(i).getId() + " rank: " + manifestShortcuts.get(i).getRank());
-            }
-            List<ShortcutInfo> dynamicShortcuts = shortcutManager.getDynamicShortcuts();
-            for (int i = 0; i < dynamicShortcuts.size(); i++) {
-                Log.i(TAG, "dynamic-" + i + " id: " + dynamicShortcuts.get(i).getId() + " rank: " + dynamicShortcuts.get(i).getRank());
-            }
-
-            Log.i(TAG, "total time: " + (System.currentTimeMillis() - lastTime) + " current thread name: " + Thread.currentThread().getName());
+            Utils.showToast(this, "set dynamic shortcuts success!");
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    private ShortcutInfo createShortcutInfo1() {
+        return new ShortcutInfo.Builder(this, ID_DYNAMIC_1)
+                .setShortLabel(getString(R.string.dynamic_shortcut_short_label1))
+                .setLongLabel(getString(R.string.dynamic_shortcut_long_label1))
+                .setIcon(Icon.createWithResource(this, R.drawable.add))
+                .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://xiaweizi.cn/")))
+                .build();
+    }
+
+    @TargetApi(Build.VERSION_CODES.N_MR1)
+    private ShortcutInfo createShortcutInfo2() {
+        Intent intent = new Intent(this, TestActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.putExtra("key", "fromDynamicShortcut");
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.BLUE);
+        String label = getResources().getString(R.string.dynamic_shortcut_long_label2);
+        SpannableStringBuilder colouredLabel = new SpannableStringBuilder(label);
+        colouredLabel.setSpan(colorSpan, 0, label.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        return new ShortcutInfo.Builder(this, ID_DYNAMIC_2)
+                .setShortLabel(getString(R.string.dynamic_shortcut_short_label2))
+                .setLongLabel(colouredLabel)
+                .setIcon(Icon.createWithResource(this, R.drawable.link))
+                .setIntent(intent)
+                .build();
     }
 
     private void createPinnedShortcuts() {
@@ -131,12 +124,18 @@ public class MainActivity extends AppCompatActivity {
             if (shortcutManager != null && shortcutManager.isRequestPinShortcutSupported()) {
                 Intent intent = new Intent(this, TestActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
-                ShortcutInfo pinShortcutInfo = new ShortcutInfo.Builder(this, "my-shortcut").setShortLabel("pinned").setIntent(intent).build();
+                intent.putExtra("key", "fromPinnedShortcut");
+                ShortcutInfo pinShortcutInfo = new ShortcutInfo.Builder(this, "my-shortcut")
+                        .setShortLabel(getString(R.string.pinned_shortcut_short_label2))
+                        .setLongLabel(getString(R.string.pinned_shortcut_long_label2))
+                        .setIcon(Icon.createWithResource(this, R.drawable.add))
+                        .setIntent(intent)
+                        .build();
                 Intent pinnedShortcutCallbackIntent = shortcutManager.createShortcutResultIntent(pinShortcutInfo);
                 PendingIntent successCallback = PendingIntent.getBroadcast(this, 0,
                         pinnedShortcutCallbackIntent, 0);
-                shortcutManager.requestPinShortcut(pinShortcutInfo, successCallback.getIntentSender());
-
+                boolean b = shortcutManager.requestPinShortcut(pinShortcutInfo, successCallback.getIntentSender());
+                Utils.showToast(this, "set pinned shortcuts " + (b ? "success" : "failed") + "!");
             }
         }
     }
